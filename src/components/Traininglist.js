@@ -8,6 +8,7 @@ import 'dayjs/locale/fi'
 export default function Traininglist() {
     const [trainings, setTrainings] = useState([]);
 
+    //Columns for table
     const columns = [
         {
             title: 'Activity',

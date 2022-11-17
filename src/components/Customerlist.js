@@ -25,6 +25,7 @@ export default function Customerlist() {
     const getPostcodes = () => {
         const arr = []
         customers.map(customer => {
+            // If a postocde is not in an arr, push it to arr.
             if (!(arr.includes(customer.postcode)))
                 arr.push(customer.postcode)
             return true;
@@ -33,6 +34,7 @@ export default function Customerlist() {
 
     }
 
+    //Columns for table
     const columns = [
         {
             title: 'Firstname',
@@ -58,7 +60,7 @@ export default function Customerlist() {
     ]
 
 
-
+    // Expanded columns for table
     const expandedColumns = [
         {
             title: 'Email',

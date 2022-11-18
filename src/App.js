@@ -1,49 +1,26 @@
 import './App.css';
 import Customerlist from './components/Customerlist';
-import { Menu } from 'antd';
+import { Tabs } from 'antd';
 import Traininglist from './components/Traininglist';
-import { useState } from 'react';
 
 function App() {
   const items = [
     {
-      label: 'Users',
-      key: 'users'
+      label: 'Customers',
+      key: 'item-1',
+      children: <Customerlist />
     },
     {
       label: 'Trainings',
-      key: 'trainings'
+      key: 'item-2',
+      children: <Traininglist />
     }
-  ]
-  const [current, setCurrent] = useState('users');
-  const onClick = (e) => {
-    setCurrent(e.key);
-  }
-
-  const renderComponent = (current) => {
-    switch (current) {
-      case 'users':
-        return <Customerlist />;
-      case 'trainings':
-        return <Traininglist />;
-    }
-  }
+  ];
 
   return (
-
     <div className="App">
-      <Menu
-        onClick={onClick}
-        selectedKeys={[current]}
-        mode='horizontal'
-        items={items}
-      >
-      </Menu>
-      {renderComponent(current)}
+      <Tabs items={items} />
     </div>
-
-
-
   );
 }
 

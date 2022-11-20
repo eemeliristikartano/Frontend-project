@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
 
-import { Table, Input } from 'antd'
+import { Table } from 'antd'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fi'
 
@@ -12,7 +12,7 @@ export default function Traininglist() {
     const [customers, setCustomers] = useState([]);
 
     //Columns for table
-    const columns = [
+    const columnsDefs = [
         {
             title: 'Activity',
             dataIndex: 'activity',
@@ -31,7 +31,7 @@ export default function Traininglist() {
             sortDirections: ['ascend', 'descend'],
             filters: dates.map(date => {
                 if (date != null) return ({ text: dayjs(date).format('DD.MM.YYYY'), value: date });
-                else return;
+                else return null;
             }),
             onFilter: (value, record) => record.date.substring(0, 10).indexOf(value) === 0,
             filterSearch: true
@@ -90,7 +90,7 @@ export default function Traininglist() {
                 if (!(datesArr.includes(data.date.substring(0, 10))))
                     datesArr.push(data.date.substring(0, 10));
             }
-            return
+            return true;
         });
         setActivitys(trainingsArr);
         setCustomers(customersArr);
@@ -102,7 +102,7 @@ export default function Traininglist() {
             <Table
                 bordered
                 sticky={true}
-                columns={columns}
+                columns={columnsDefs}
                 dataSource={trainings}
                 rowKey={training => training.id}
             />

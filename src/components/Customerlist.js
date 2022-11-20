@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
 
-import { Table, Button } from 'antd'
+import { Table, message, Button, Popconfirm } from 'antd';
+import { DeleteTwoTone } from '@ant-design/icons';
+import AddCustomer from "./AddCustomer";
+import EditCustomer from "./EditCustomer";
+import AddTrainingToCustomer from "./AddTrainingToCustomer";
 
 export default function Customerlist() {
     const [customers, setCustomers] = useState([]);
     const [postcodes, setPostcodes] = useState([]);
     const [firstnames, setFirstnames] = useState([]);
     const [lastnames, setLastnames] = useState([]);
-
+    const [messageApi, contextHolder] = message.useMessage();
 
     const getCustomers = async () => {
         try {
@@ -22,7 +26,7 @@ export default function Customerlist() {
 
 
     //Columns for table
-    const columns = [
+    const columnsDefs = [
         {
             title: 'Firstname',
             dataIndex: 'firstname',
@@ -51,13 +55,36 @@ export default function Customerlist() {
                 return ({ text: postcode, value: postcode })
             }),
             onFilter: (value, record) => record.postcode.indexOf(value) === 0,
-            width: '10%'
+            width: 120
+        },
+        {
+            title: 'Add training',
+            render: params => <AddTrainingToCustomer data={params} addTrainingToCustomer={addTrainingToCustomer} />,
+            width: 85
+        },
+        {
+            render: params => <EditCustomer data={params} updateCustomer={updateCustomer} />,
+            width: 120
+
+        },
+        {
+            render: params =>
+                <Popconfirm
+                    title={`Are you sure to delete customer: ${params.firstname} ${params.lastname}?`}
+                    onConfirm={() => deleteCustomer(params)}
+                >
+                    <Button
+                        danger
+                        type="primary"
+                    >Delete<DeleteTwoTone /></Button>
+                </Popconfirm>,
+            width: 120
         }
     ];
 
 
     // Expanded columns for table
-    const expandedColumns = [
+    const expandedColumnsDefs = [
         {
             title: 'Email',
             dataIndex: 'email'
@@ -99,21 +126,110 @@ export default function Customerlist() {
             // If a last name is not in an arr, push it to arr.
             if (!(lastnamesArr.includes(customer.lastname)))
                 lastnamesArr.push(customer.lastname);
-            return
+            return true;
         })
         setPostcodes(postcodesArr);
         setFirstnames(firstnamesArr);
         setLastnames(lastnamesArr);
-    }, [customers])
+    }, [customers]);
+
+    const addCustomer = async (customer) => {
+        const config = {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(customer)
+        };
+        try {
+            const response = await fetch(API_URL + 'api/customers', config);
+            if (response.ok) {
+                getCustomers();
+                success();
+            }
+            else error();
+        } catch (error) {
+
+        }
+    }
+
+    const updateCustomer = async (customer, url) => {
+        const config = {
+            method: 'PUT',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(customer)
+        };
+        try {
+            const response = await fetch(url, config);
+            if (response.ok) {
+                getCustomers();
+                success();
+            }
+            else error();
+        } catch (error) {
+
+        }
+    }
+
+    const deleteCustomer = async (data) => {
+        const config = {
+            method: 'DELETE'
+        };
+        try {
+            const response = await fetch(data.links[1].href, config);
+            if (response.ok) {
+                getCustomers();
+                success();
+            }
+            else error();
+        } catch (error) {
+
+        }
+
+    }
+
+    const addTrainingToCustomer = async (training) => {
+        const config = {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(training)
+        };
+        try {
+            const response = await fetch(API_URL + 'api/trainings', config);
+            if (response.ok) {
+                success();
+            }
+            else error();
+        } catch (error) {
+
+        }
+
+    }
+
+
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Success',
+        });
+    };
+
+    const error = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Something went wrong',
+        });
+    };
 
 
 
     return (
         <>
+            {contextHolder}
+            <AddCustomer addCustomer={addCustomer} />
             <Table
                 bordered
                 sticky={true}
-                columns={columns}
+                columns={columnsDefs}
                 dataSource={customers}
                 rowKey={customer => customer.links[0].href}
                 expandable={{
@@ -122,7 +238,7 @@ export default function Customerlist() {
                         <Table
                             bordered
                             dataSource={[customer]}
-                            columns={expandedColumns}
+                            columns={expandedColumnsDefs}
                             pagination={false}
                             rowKey={customer => customer.links[0].href}
                         />

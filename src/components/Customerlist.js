@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
+import { CSVLink, CSVDownload } from "react-csv";
 
-import { Table, message, Button, Popconfirm } from 'antd';
-import { DeleteTwoTone } from '@ant-design/icons';
+import { Table, message, Button, Popconfirm, Space } from 'antd';
+import { DeleteTwoTone, DownloadOutlined } from '@ant-design/icons';
 import AddCustomer from "./AddCustomer";
 import EditCustomer from "./EditCustomer";
 import AddTrainingToCustomer from "./AddTrainingToCustomer";
@@ -106,6 +107,37 @@ export default function Customerlist() {
             dataIndex: 'city'
         }
     ];
+
+    const headers = [
+        {
+            label: 'firstname',
+            key: 'firstname'
+        },
+        {
+            label: 'lastname',
+            key: 'lastname'
+        },
+        {
+            label: 'email',
+            key: 'email'
+        },
+        {
+            label: 'phone',
+            key: 'phone'
+        },
+        {
+            label: 'streetaddress',
+            key: 'streetaddress'
+        },
+        {
+            label: 'postcode',
+            key: 'postcode'
+        },
+        {
+            label: 'city',
+            key: 'city'
+        }
+    ]
 
     useEffect(() => {
         // eslint-disable-next-line
@@ -226,7 +258,20 @@ export default function Customerlist() {
     return (
         <>
             {contextHolder}
-            <AddCustomer addCustomer={addCustomer} />
+            <Space>
+                <AddCustomer addCustomer={addCustomer} />
+                <CSVLink
+                    data={customers}
+                    headers={headers}
+                    enclosingCharacter={``}
+                    filename={"customers.csv"}
+                    target="_blank"
+                ><Button type="primary">
+                        Download to .CSV <DownloadOutlined />
+
+                    </Button>
+                </CSVLink>
+            </Space>
             <Table
                 bordered
                 sticky={true}

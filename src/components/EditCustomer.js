@@ -51,7 +51,7 @@ export default function EditCustomer(props) {
                 Edit <EditOutlined />
             </Button>
             <Modal
-                title='Add customer'
+                title='Edit customer'
                 open={open}
                 onCancel={handleClose}
                 okText='Submit'

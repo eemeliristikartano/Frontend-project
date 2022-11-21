@@ -1,15 +1,30 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
 
-import { Table } from 'antd'
+import { Table, Popconfirm, Button, message } from 'antd'
+import { DeleteTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs'
-import 'dayjs/locale/fi'
 
-export default function Traininglist() {
+export default function Traininglist(props) {
     const [trainings, setTrainings] = useState([]);
     const [activitys, setActivitys] = useState([]);
     const [dates, setDates] = useState([]);
     const [customers, setCustomers] = useState([]);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Success',
+        });
+    };
+
+    const error = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Something went wrong',
+        });
+    };
 
     //Columns for table
     const columnsDefs = [
@@ -19,8 +34,10 @@ export default function Traininglist() {
             filters: activitys.map(activity => {
                 return ({ text: activity, value: activity })
             }),
-            onFilter: (value, record) => record.activity.indexOf(value) === 0,
-            filterSearch: true
+            onFilter: (value, record) => record.activity ? record.activity.indexOf(value) === 0 : null,
+            filterSearch: true,
+            sorter: (a, b) => a.activity.localeCompare(b.activity),
+            sortDirections: ["descend", "ascend"]
 
         },
         {
@@ -28,12 +45,12 @@ export default function Traininglist() {
             dataIndex: 'date',
             render: (date => dayjs(date.substring(0, 23)).format('DD.MM.YYYY HH:mm')),
             sorter: (a, b) => new Date(dayjs(a.date).unix()) - new Date(dayjs(b.date).unix()),
-            sortDirections: ['ascend', 'descend'],
+            sortDirections: ["descend", "ascend"],
             filters: dates.map(date => {
                 if (date != null) return ({ text: dayjs(date).format('DD.MM.YYYY'), value: date });
                 else return null;
             }),
-            onFilter: (value, record) => record.date.substring(0, 10).indexOf(value) === 0,
+            onFilter: (value, record) => record.date ? record.date.substring(0, 10).indexOf(value) === 0 : null,
             filterSearch: true
 
         },
@@ -57,22 +74,58 @@ export default function Traininglist() {
             },
             filterSearch: true
 
+        },
+        {
+            render: params =>
+                <Popconfirm
+                    title={`Are you sure to delete activity: ${params.activity} from ${params.customer.firstname + ' ' + params.customer.lastname}?`}
+                    onConfirm={() => deleteTraining(params)}
+                >
+                    <Button
+                        danger
+                        type="primary"
+                    >Delete<DeleteTwoTone /></Button>
+                </Popconfirm>,
+            width: 120
         }
 
     ];
 
-    useEffect(() => {
-        const getTrainings = async () => {
-            try {
-                const response = await fetch(API_URL + "gettrainings");
-                const data = await response.json();
-                setTrainings(data);
-            } catch (error) {
-                console.log(error);
+    const deleteTraining = async (data) => {
+        const config = {
+            method: 'DELETE'
+        };
+        try {
+            const response = await fetch(API_URL + `api/trainings/${data.id}`, config);
+            if (response.ok) {
+                getTrainings();
+                success();
             }
+            else error();
+        } catch (error) {
+
         }
+
+    }
+
+
+    const getTrainings = async () => {
+        try {
+            const response = await fetch(API_URL + "gettrainings");
+            const data = await response.json();
+            setTrainings(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
         getTrainings();
     }, [])
+
+    useEffect(() => {
+        getTrainings();
+    }, [props])
 
     useEffect(() => {
         const trainingsArr = [];
@@ -99,6 +152,7 @@ export default function Traininglist() {
 
     return (
         <>
+            {contextHolder}
             <Table
                 bordered
                 sticky={true}

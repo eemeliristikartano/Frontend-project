@@ -194,6 +194,7 @@ export default function Customerlist() {
         };
         try {
             const response = await fetch(API_URL + 'api/trainings', config);
+            console.log(response)
             if (response.ok) {
                 success();
             }

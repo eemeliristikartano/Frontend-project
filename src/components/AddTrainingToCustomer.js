@@ -1,24 +1,30 @@
 import { useState } from 'react';
 
 import { PlusSquareTwoTone } from '@ant-design/icons';
-import { Button, Modal, Form, Input, DatePicker, TimePicker } from 'antd';
+import { Button, Modal, Form, Input, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export default function AddTrainingToCustomer(props) {
+    const [date, setDate] = useState('');
     const [training, setTraining] = useState({
         date: '',
         activity: '',
         duration: '',
         customer: ''
     });
-
     const [open, setOpen] = useState(false);
 
     const showModal = () => {
         setOpen(true);
+        setTraining({ ...training, customer: props.data.links[1].href });
     }
 
     const handleClose = () => {
+        setDate('');
         setTraining({
             date: '',
             activity: '',
@@ -29,15 +35,13 @@ export default function AddTrainingToCustomer(props) {
     }
 
     const handleSubmit = () => {
-        setTraining({ ...training, customer: props.data.links[1].href })
-        props.AddTrainingToCustomer(training);
+        props.addTrainingToCustomer(training);
         handleClose();
     }
 
     const handleChange = (e) => {
-        setTraining({ ...training, [e.target.name]: e.target.value });
+        setTraining({ ...training, [e.target.name]: e.target.value, date: date });
     }
-
 
     return (
         <>
@@ -46,7 +50,7 @@ export default function AddTrainingToCustomer(props) {
                 onClick={showModal}
             ><PlusSquareTwoTone /></Button>
             <Modal
-                title='Add customer'
+                title='Add training to customer'
                 open={open}
                 onCancel={handleClose}
                 okText='Submit'
@@ -57,11 +61,9 @@ export default function AddTrainingToCustomer(props) {
                         label='Date:'
                     >
                         <DatePicker
-                            value={training.date ? dayjs(training.date).toISOString() : ''}
-                            //name='date'
-                            //onChange={console.log()}
+                            onChange={e => setDate(dayjs(e).utc(true).toISOString())}
                             showTime={true}
-                        //format='DD.MM.YYYY HH:mm'
+                            format='DD.MM.YYYY HH:mm'
                         />
                     </Form.Item>
                     <Form.Item

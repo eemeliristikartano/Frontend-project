@@ -3,6 +3,7 @@ import Customerlist from './components/Customerlist';
 import { Tabs } from 'antd';
 import Traininglist from './components/Traininglist';
 import { useState } from 'react';
+import CalendarPage from './components/CalendarPage';
 
 function App() {
   const [event, setEvent] = useState('');
@@ -16,11 +17,16 @@ function App() {
       label: 'Trainings',
       key: 'item-2',
       children: <Traininglist event={event} />
+    },
+    {
+      label: 'Calendar',
+      key: 'item-3',
+      children: <CalendarPage event={event} />
     }
   ];
 
   const handleTabClick = (key, event) => {
-    if (key === 'item-2') setEvent(event);
+    if (key === 'item-2' || key === 'item-3') setEvent(event);
   }
 
   return (

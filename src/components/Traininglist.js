@@ -43,14 +43,14 @@ export default function Traininglist(props) {
         {
             title: 'Date',
             dataIndex: 'date',
-            render: (date => dayjs(date.substring(0, 23)).format('DD.MM.YYYY HH:mm')),
+            render: (date => date != null ? dayjs(date.substring(0, 23)).format('DD.MM.YYYY HH:mm') : ''),
             sorter: (a, b) => new Date(dayjs(a.date).unix()) - new Date(dayjs(b.date).unix()),
             sortDirections: ["descend", "ascend"],
             filters: dates.map(date => {
                 if (date != null) return ({ text: dayjs(date).format('DD.MM.YYYY'), value: date });
-                else return null;
+                else return '';
             }),
-            onFilter: (value, record) => record.date ? record.date.substring(0, 10).indexOf(value) === 0 : null,
+            onFilter: (value, record) => record.date != null ? record.date.substring(0, 10).indexOf(value) === 0 : null,
             filterSearch: true
 
         },

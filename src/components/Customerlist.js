@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 
 import { Table, message, Button, Popconfirm, Space } from 'antd';
 import { DeleteTwoTone, DownloadOutlined } from '@ant-design/icons';
@@ -226,7 +226,6 @@ export default function Customerlist() {
         };
         try {
             const response = await fetch(API_URL + 'api/trainings', config);
-            console.log(response)
             if (response.ok) {
                 success();
             }

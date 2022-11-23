@@ -4,6 +4,7 @@ import { Tabs } from 'antd';
 import Traininglist from './components/Traininglist';
 import { useState } from 'react';
 import CalendarPage from './components/CalendarPage';
+import StaticsPage from './components/StaticsPage';
 
 function App() {
   const [event, setEvent] = useState('');
@@ -22,6 +23,11 @@ function App() {
       label: 'Calendar',
       key: 'item-3',
       children: <CalendarPage event={event} />
+    },
+    {
+      label: 'Statics',
+      key: 'item-4',
+      children: <StaticsPage />
     }
   ];
 

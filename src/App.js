@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import Traininglist from './components/Traininglist';
 import { useState } from 'react';
 import CalendarPage from './components/CalendarPage';
-import StaticsPage from './components/StaticsPage';
+import StatisticsPage from './components/StatisticsPage';
 
 function App() {
   const [event, setEvent] = useState('');
@@ -25,14 +25,14 @@ function App() {
       children: <CalendarPage event={event} />
     },
     {
-      label: 'Statics',
+      label: 'Statistics',
       key: 'item-4',
-      children: <StaticsPage />
+      children: <StatisticsPage event={event} />
     }
   ];
 
   const handleTabClick = (key, event) => {
-    if (key === 'item-2' || key === 'item-3') setEvent(event);
+    if (key === 'item-2' || key === 'item-3' || key === 'item-4') setEvent(event);
   }
 
   return (

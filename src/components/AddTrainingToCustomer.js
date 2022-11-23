@@ -78,7 +78,7 @@ export default function AddTrainingToCustomer(props) {
                     <Form.Item
                         label='Duration:'
                     >
-                        <InputNumber
+                        <Input
                             name='duration'
                             value={training.duration}
                             onChange={handleChange}

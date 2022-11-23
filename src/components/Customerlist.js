@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../constants";
-import { CSVLink } from "react-csv";
 
 import { Table, message, Button, Popconfirm, Space } from 'antd';
-import { DeleteTwoTone, DownloadOutlined } from '@ant-design/icons';
+import { DeleteTwoTone } from '@ant-design/icons';
 import AddCustomer from "./AddCustomer";
 import EditCustomer from "./EditCustomer";
 import AddTrainingToCustomer from "./AddTrainingToCustomer";
+import DownloadCSV from "./DownloadCSV";
 
 export default function Customerlist() {
     const [customers, setCustomers] = useState([]);
@@ -15,24 +15,13 @@ export default function Customerlist() {
     const [lastnames, setLastnames] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
 
-    const getCustomers = async () => {
-        try {
-            const response = await fetch(API_URL + "api/customers");
-            const data = await response.json();
-            setCustomers(data.content);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-
     //Columns for table
     const columnsDefs = [
         {
             title: 'Firstname',
             dataIndex: 'firstname',
             sorter: (a, b) => a.firstname.localeCompare(b.firstname),
-            sortDirections: ["descend", "ascend"],
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: firstnames.map(firstname => {
                 return ({ text: firstname, value: firstname })
             }),
@@ -43,7 +32,7 @@ export default function Customerlist() {
             title: 'Lastname',
             dataIndex: 'lastname',
             sorter: (a, b) => a.lastname.localeCompare(b.lastname),
-            sortDirections: ["descend", "ascend"],
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: lastnames.map(lastname => {
                 return ({ text: lastname, value: lastname })
             }),
@@ -52,23 +41,28 @@ export default function Customerlist() {
         },
         {
             title: 'Find with postcode',
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: postcodes.map(postcode => {
                 return ({ text: postcode, value: postcode })
             }),
             onFilter: (value, record) => record.postcode.indexOf(value) === 0,
+            filterSearch: true,
             width: 120
         },
         {
             title: 'Add training',
+            //Renders a button to each row for adding a training to a customer. 
             render: params => <AddTrainingToCustomer data={params} addTrainingToCustomer={addTrainingToCustomer} />,
             width: 85
         },
         {
+            //Renders a button to each row for editing customer.
             render: params => <EditCustomer data={params} updateCustomer={updateCustomer} />,
             width: 120
 
         },
         {
+            //Renders Delete-button for deleting a customer.
             render: params =>
                 <Popconfirm
                     title={`Are you sure to delete customer: ${params.firstname} ${params.lastname}?`}
@@ -108,41 +102,21 @@ export default function Customerlist() {
         }
     ];
 
-    const headers = [
-        {
-            label: 'firstname',
-            key: 'firstname'
-        },
-        {
-            label: 'lastname',
-            key: 'lastname'
-        },
-        {
-            label: 'email',
-            key: 'email'
-        },
-        {
-            label: 'phone',
-            key: 'phone'
-        },
-        {
-            label: 'streetaddress',
-            key: 'streetaddress'
-        },
-        {
-            label: 'postcode',
-            key: 'postcode'
-        },
-        {
-            label: 'city',
-            key: 'city'
-        }
-    ]
 
     useEffect(() => {
         // eslint-disable-next-line
         getCustomers();
     }, [])
+
+    const getCustomers = async () => {
+        try {
+            const response = await fetch(API_URL + "api/customers");
+            const data = await response.json();
+            setCustomers(data.content);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         const postcodesArr = [];
@@ -236,8 +210,6 @@ export default function Customerlist() {
 
     }
 
-
-
     const success = () => {
         messageApi.open({
             type: 'success',
@@ -256,20 +228,11 @@ export default function Customerlist() {
 
     return (
         <>
+            {/*Shows messages. */}
             {contextHolder}
             <Space>
                 <AddCustomer addCustomer={addCustomer} />
-                <CSVLink
-                    data={customers}
-                    headers={headers}
-                    enclosingCharacter={``}
-                    filename={"customers.csv"}
-                    target="_blank"
-                ><Button type="primary">
-                        Download to .CSV <DownloadOutlined />
-
-                    </Button>
-                </CSVLink>
+                <DownloadCSV customers={customers} />
             </Space>
             <Table
                 bordered

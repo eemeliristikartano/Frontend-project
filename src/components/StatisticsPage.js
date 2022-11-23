@@ -3,8 +3,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label } fr
 import { API_URL } from '../constants';
 import _ from 'lodash';
 
-
-
 export default function StatisticsPage(props) {
     const [trainings, setTrainings] = useState([]);
     const [groupedTrainings, setGroupedTrainings] = useState([]);
@@ -17,29 +15,20 @@ export default function StatisticsPage(props) {
                 const data = await response.json();
                 setTrainings(data.content);
             } catch (error) {
-
+                console.log(error)
             }
-
         }
-
         getTrainings();
-
-    }, [props])
+    }, [props]);
 
     useEffect(() => {
         const arr = []
         setGroupedTrainings(_.groupBy(trainings, 'activity'));
         for (const property in groupedTrainings) {
-            arr.push({ name: property, activity: _.sumBy(groupedTrainings[property], 'duration') });
+            arr.push({ name: property, duration: _.sumBy(groupedTrainings[property], 'duration') });
         }
         setData(arr);
-    }, [trainings])
-
-
-
-
-
-
+    }, [trainings]);
 
     return (
         <>
@@ -62,10 +51,7 @@ export default function StatisticsPage(props) {
                 </YAxis>
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="activity" fill="#8884d8" />
-
+                <Bar dataKey="duration" fill="#8884d8" />
             </BarChart>
-
-
         </>);
 }

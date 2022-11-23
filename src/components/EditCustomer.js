@@ -2,9 +2,7 @@ import { useState } from 'react';
 
 import { EditOutlined } from '@ant-design/icons';
 import { Button, Modal } from 'antd';
-
 import CustomerForm from './CustomerForm';
-
 
 export default function EditCustomer(props) {
     const [customer, setCustomer] = useState({

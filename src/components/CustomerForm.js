@@ -1,5 +1,6 @@
 import { Form, Input } from 'antd';
 
+//Form for adding a new customer or editing an existing customer.
 export default function CustomerForm(props) {
     return (
         <>

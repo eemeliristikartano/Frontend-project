@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { PlusSquareTwoTone } from '@ant-design/icons';
-import { Button, Modal, Form, Input, DatePicker, InputNumber } from 'antd';
+import { Button, Modal, Form, Input, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -9,7 +9,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 export default function AddTrainingToCustomer(props) {
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(null);
     const [training, setTraining] = useState({
         date: '',
         activity: '',
@@ -61,7 +61,7 @@ export default function AddTrainingToCustomer(props) {
                         label='Date:'
                     >
                         <DatePicker
-                            onChange={e => setDate(dayjs(e).utc(true).toISOString())}
+                            onChange={e => e != null ? setDate(dayjs(e).utc(true).toISOString()) : ''}
                             showTime={true}
                             format='DD.MM.YYYY HH:mm'
                         />
@@ -73,6 +73,7 @@ export default function AddTrainingToCustomer(props) {
                             name='activity'
                             value={training.activity}
                             onChange={handleChange}
+                            required={true}
                         />
                     </Form.Item>
                     <Form.Item
@@ -83,6 +84,7 @@ export default function AddTrainingToCustomer(props) {
                             value={training.duration}
                             onChange={handleChange}
                             type='number'
+                            required={true}
                         />
                     </Form.Item>
                 </Form>

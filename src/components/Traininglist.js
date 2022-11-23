@@ -7,64 +7,47 @@ import dayjs from 'dayjs'
 
 export default function Traininglist(props) {
     const [trainings, setTrainings] = useState([]);
-    const [activitys, setActivitys] = useState([]);
+    const [activities, setActivities] = useState([]);
     const [dates, setDates] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
-
-    const success = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Success',
-        });
-    };
-
-    const error = () => {
-        messageApi.open({
-            type: 'error',
-            content: 'Something went wrong',
-        });
-    };
 
     //Columns for table
     const columnsDefs = [
         {
             title: 'Activity',
             dataIndex: 'activity',
-            filters: activitys.map(activity => {
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
+            filters: activities.map(activity => {
                 return ({ text: activity, value: activity })
             }),
             onFilter: (value, record) => record.activity ? record.activity.indexOf(value) === 0 : null,
             filterSearch: true,
             sorter: (a, b) => a.activity.localeCompare(b.activity),
-            sortDirections: ["descend", "ascend"]
-
         },
         {
             title: 'Date',
             dataIndex: 'date',
             render: (date => date != null ? dayjs(date.substring(0, 23)).format('DD.MM.YYYY HH:mm') : ''),
             sorter: (a, b) => new Date(dayjs(a.date).unix()) - new Date(dayjs(b.date).unix()),
-            sortDirections: ["descend", "ascend"],
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: dates.map(date => {
                 if (date != null) return ({ text: dayjs(date).format('DD.MM.YYYY'), value: date });
                 else return '';
             }),
             onFilter: (value, record) => record.date != null ? record.date.substring(0, 10).indexOf(value) === 0 : null,
             filterSearch: true
-
         },
         {
             title: 'Duration (minutes)',
             dataIndex: 'duration',
             sorter: (a, b) => a.duration - b.duration,
-            sortDirections: ['ascend', 'descend']
-
         },
         {
             title: 'Customer',
             dataIndex: 'customer',
             render: (customer => customer.firstname + ' ' + customer.lastname),
+            //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: customers.map(customer => {
                 return ({ text: customer, value: customer })
             }),
@@ -73,9 +56,9 @@ export default function Traininglist(props) {
                 return customer.indexOf(value) === 0;
             },
             filterSearch: true
-
         },
         {
+            //Renders Delete-button for deleting a customer.
             render: params =>
                 <Popconfirm
                     title={`Are you sure to delete activity: ${params.activity} from ${params.customer.firstname + ' ' + params.customer.lastname}?`}
@@ -103,11 +86,10 @@ export default function Traininglist(props) {
             }
             else error();
         } catch (error) {
-
+            console.log(error);
         }
 
     }
-
 
     const getTrainings = async () => {
         try {
@@ -121,11 +103,7 @@ export default function Traininglist(props) {
 
     useEffect(() => {
         getTrainings();
-    }, [])
-
-    useEffect(() => {
-        getTrainings();
-    }, [props])
+    }, [props]);
 
     useEffect(() => {
         const trainingsArr = [];
@@ -145,13 +123,28 @@ export default function Traininglist(props) {
             }
             return true;
         });
-        setActivitys(trainingsArr);
+        setActivities(trainingsArr);
         setCustomers(customersArr);
         setDates(datesArr);
     }, [trainings]);
 
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Success',
+        });
+    };
+
+    const error = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Something went wrong',
+        });
+    };
+
     return (
         <>
+            {/*Shows messages. */}
             {contextHolder}
             <Table
                 bordered

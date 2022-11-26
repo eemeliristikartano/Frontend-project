@@ -12,7 +12,7 @@ function App() {
     {
       label: 'Customers',
       key: 'item-1',
-      children: <Customerlist />
+      children: <Customerlist event={event} />
     },
     {
       label: 'Trainings',
@@ -31,8 +31,9 @@ function App() {
     }
   ];
 
+  //Update data everytime user changes tab.
   const handleTabClick = (key, event) => {
-    if (key === 'item-2' || key === 'item-3' || key === 'item-4') setEvent(event);
+    setEvent(event);
   }
 
   return (

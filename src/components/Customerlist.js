@@ -8,7 +8,7 @@ import EditCustomer from "./EditCustomer";
 import AddTrainingToCustomer from "./AddTrainingToCustomer";
 import DownloadCSV from "./DownloadCSV";
 
-export default function Customerlist() {
+export default function Customerlist(props) {
     const [customers, setCustomers] = useState([]);
     const [postcodes, setPostcodes] = useState([]);
     const [firstnames, setFirstnames] = useState([]);
@@ -106,7 +106,7 @@ export default function Customerlist() {
     useEffect(() => {
         // eslint-disable-next-line
         getCustomers();
-    }, [])
+    }, [props])
 
     const getCustomers = async () => {
         try {

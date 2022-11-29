@@ -124,13 +124,13 @@ export default function Customerlist(props) {
         const lastnamesArr = [];
         customers.map(customer => {
             // If a postocde is not in an arr, push it to arr.
-            if (!(postcodesArr.includes(customer.postcode)) && customer.postcode != '')
+            if (!(postcodesArr.includes(customer.postcode)) && customer.postcode !== '')
                 postcodesArr.push(customer.postcode)
             // If a first name is not in an arr, push it to arr.
-            if (!(firstnamesArr.includes(customer.firstname)) && customer.firstname != '')
+            if (!(firstnamesArr.includes(customer.firstname)) && customer.firstname !== '')
                 firstnamesArr.push(customer.firstname);
             // If a last name is not in an arr, push it to arr.
-            if (!(lastnamesArr.includes(customer.lastname)) && customer.lastname != '')
+            if (!(lastnamesArr.includes(customer.lastname)) && customer.lastname !== '')
                 lastnamesArr.push(customer.lastname);
             return true;
         })

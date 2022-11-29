@@ -5,10 +5,13 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 
 import { API_URL } from '../constants';
 import dayjs from 'dayjs';
+import EventModal from './EventModal';
 
 
 export default function CalendarPage(props) {
     const [events, setEvents] = useState([]);
+    const [event, setEvent] = useState('');
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const getEvents = async () => {
@@ -22,11 +25,21 @@ export default function CalendarPage(props) {
 
         }
         getEvents();
-    }, [props])
+    }, [props]);
+
+    const handleEventClick = (e) => {
+        setEvent(e.event);
+        setOpen(!open);
+    }
+
+    const handleClose = () => {
+        setOpen(!open);
+    }
 
 
     return (
         <>
+            <EventModal event={event} open={open} handleClose={handleClose} />
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin]}
                 initialView='dayGridMonth'
@@ -36,6 +49,7 @@ export default function CalendarPage(props) {
                 nowIndicator={true}
                 firstDay={1}
                 timeZoneParam='fi'
+                eventClick={handleEventClick}
                 eventTimeFormat={
                     {
                         hour: '2-digit',

@@ -59,7 +59,7 @@ export default function CalendarPage(props) {
                 //Events to calendar.
                 events={events.map((event) => {
                     return ({
-                        title: `${event.activity} / ${event.customer.firstname} ${event.customer.lastname}`,
+                        title: event.customer != null ? `${event.activity} / ${event.customer.firstname} ${event.customer.lastname}` : '',
                         start: event.date != null ? dayjs(event.date.substring(0, 23)).toISOString() : '',
                         end: event.date != null ? dayjs(event.date.substring(0, 23)).add(event.duration, 'minute').toISOString() : ''
                     })

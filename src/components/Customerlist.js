@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { API_URL } from "../constants";
+import { useState, useEffect } from 'react';
+import { API_URL } from '../constants';
 
 import { Table, message, Button, Popconfirm, Space } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
-import AddCustomer from "./AddCustomer";
-import EditCustomer from "./EditCustomer";
-import AddTrainingToCustomer from "./AddTrainingToCustomer";
-import DownloadCSV from "./DownloadCSV";
+import AddCustomer from './AddCustomer';
+import EditCustomer from './EditCustomer';
+import AddTrainingToCustomer from './AddTrainingToCustomer';
+import DownloadCSV from './DownloadCSV';
 
 export default function Customerlist(props) {
     const [customers, setCustomers] = useState([]);
@@ -70,7 +70,7 @@ export default function Customerlist(props) {
                 >
                     <Button
                         danger
-                        type="primary"
+                        type='primary'
                     >Delete<DeleteTwoTone /></Button>
                 </Popconfirm>,
             width: 120
@@ -110,7 +110,7 @@ export default function Customerlist(props) {
 
     const getCustomers = async () => {
         try {
-            const response = await fetch(API_URL + "api/customers");
+            const response = await fetch(API_URL + 'api/customers');
             const data = await response.json();
             setCustomers(data.content);
         } catch (error) {
@@ -124,13 +124,13 @@ export default function Customerlist(props) {
         const lastnamesArr = [];
         customers.map(customer => {
             // If a postocde is not in an arr, push it to arr.
-            if (!(postcodesArr.includes(customer.postcode)))
+            if (!(postcodesArr.includes(customer.postcode)) && customer.postcode != '')
                 postcodesArr.push(customer.postcode)
             // If a first name is not in an arr, push it to arr.
-            if (!(firstnamesArr.includes(customer.firstname)))
+            if (!(firstnamesArr.includes(customer.firstname)) && customer.firstname != '')
                 firstnamesArr.push(customer.firstname);
             // If a last name is not in an arr, push it to arr.
-            if (!(lastnamesArr.includes(customer.lastname)))
+            if (!(lastnamesArr.includes(customer.lastname)) && customer.lastname != '')
                 lastnamesArr.push(customer.lastname);
             return true;
         })

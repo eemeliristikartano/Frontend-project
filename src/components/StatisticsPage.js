@@ -22,6 +22,10 @@ export default function StatisticsPage(props) {
 
     useLayoutEffect(() => {
         getTrainings();
+    }, []);
+
+    useLayoutEffect(() => {
+        getTrainings();
     }, [props]);
 
     useLayoutEffect(() => {

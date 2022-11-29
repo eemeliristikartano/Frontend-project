@@ -40,9 +40,9 @@ export default function DownloadCSV(props) {
                 data={props.customers}
                 headers={headers}
                 enclosingCharacter={``}
-                filename={"customers.csv"}
-                target="_blank"
-            ><Button type="primary">
+                filename={'customers.csv'}
+                target='_blank'
+            ><Button type='primary'>
                     Download to .CSV <DownloadOutlined />
                 </Button>
             </CSVLink>

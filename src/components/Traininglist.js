@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { API_URL } from "../constants";
-
+import { useState, useEffect } from 'react';
+import { API_URL } from '../constants';
 import { Table, Popconfirm, Button, message } from 'antd'
 import { DeleteTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs'
@@ -46,14 +45,17 @@ export default function Traininglist(props) {
         {
             title: 'Customer',
             dataIndex: 'customer',
-            render: (customer => customer.firstname + ' ' + customer.lastname),
+            render: (customer => customer != null ? customer.firstname + ' ' + customer.lastname : ''),
             //Returns objects inside an array. Provides filters for filtering. No duplicates.
             filters: customers.map(customer => {
                 return ({ text: customer, value: customer })
             }),
             onFilter: (value, record) => {
-                const customer = record.customer.firstname + ' ' + record.customer.lastname;
-                return customer.indexOf(value) === 0;
+                if (record.customer != null) {
+                    const customer = record.customer.firstname + ' ' + record.customer.lastname;
+                    return customer.indexOf(value) === 0;
+                }
+                return '';
             },
             filterSearch: true
         },
@@ -61,12 +63,12 @@ export default function Traininglist(props) {
             //Renders Delete-button for deleting a customer.
             render: params =>
                 <Popconfirm
-                    title={`Are you sure to delete activity: ${params.activity} from ${params.customer.firstname + ' ' + params.customer.lastname}?`}
+                    title={params.customer != null ? `Are you sure to delete activity: ${params.activity} from ${params.customer.firstname + ' ' + params.customer.lastname}?` : `Are you sure to delete activity?`}
                     onConfirm={() => deleteTraining(params)}
                 >
                     <Button
                         danger
-                        type="primary"
+                        type='primary'
                     >Delete<DeleteTwoTone /></Button>
                 </Popconfirm>,
             width: 120
@@ -93,7 +95,7 @@ export default function Traininglist(props) {
 
     const getTrainings = async () => {
         try {
-            const response = await fetch(API_URL + "gettrainings");
+            const response = await fetch(API_URL + 'gettrainings');
             const data = await response.json();
             setTrainings(data);
         } catch (error) {
@@ -113,9 +115,11 @@ export default function Traininglist(props) {
             // If the activity is not in the arr, push it to arr.
             if (!(trainingsArr.includes(data.activity)))
                 trainingsArr.push(data.activity);
-            // If full name is not in the arr, push it to arr.
-            if (!(customersArr.includes(data.customer.firstname + ' ' + data.customer.lastname)))
-                customersArr.push(data.customer.firstname + ' ' + data.customer.lastname);
+            // If the customer is not null and full name is not in the arr, push it to arr.
+            if (data.customer != null) {
+                if (!(customersArr.includes(data.customer.firstname + ' ' + data.customer.lastname)))
+                    customersArr.push(data.customer.firstname + ' ' + data.customer.lastname);
+            }
             // If the date is not null and it is not in an arr, push it to arr.
             if (data.date != null) {
                 if (!(datesArr.includes(data.date.substring(0, 10))))

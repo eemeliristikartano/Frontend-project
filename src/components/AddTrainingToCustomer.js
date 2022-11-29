@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { PlusSquareTwoTone } from '@ant-design/icons';
 import { Button, Modal, Form, Input, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -88,8 +87,6 @@ export default function AddTrainingToCustomer(props) {
                         />
                     </Form.Item>
                 </Form>
-
-
             </Modal>
         </>
     );

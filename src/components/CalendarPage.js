@@ -40,6 +40,7 @@ export default function CalendarPage(props) {
     return (
         <>
             <EventModal event={event} open={open} handleClose={handleClose} />
+            <h3>Click event to see more details.</h3>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin]}
                 initialView='dayGridMonth'

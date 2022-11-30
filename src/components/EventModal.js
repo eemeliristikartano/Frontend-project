@@ -11,6 +11,7 @@ export default function EventModal(props) {
             <Modal
                 title='Event'
                 open={props.open}
+                onCancel={() => props.handleClose()}
                 footer={[
                     <Button type='primary' onClick={() => props.handleClose()}>Close</Button>
                 ]}
